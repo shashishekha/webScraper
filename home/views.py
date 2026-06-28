@@ -2,10 +2,11 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from .script import scrape_imdb_news
 from .models import News
-# Create your views here.
+from home.tasks import add
+
+
 
 def run_scraper(request):
-    # from .script import scrape_imdb_news
     scrape_imdb_news()
     return JsonResponse({
         "status":True,
@@ -13,7 +14,8 @@ def run_scraper(request):
     })
 
 def index(request):
-    # from .models import News
+    result =add.delay(10,5)
+    print(result)
     return render(request, 'index.html', context ={
         "news_data": News.objects.all()
     })
